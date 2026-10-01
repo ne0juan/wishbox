@@ -1,0 +1,19 @@
+# Local workspace and private study materials
+.codex/
+upload/
+*.local
+.env
+.env.*
+!.env.example
+
+# Dependency and build output (for a future prototype)
+node_modules/
+dist/
+build/
+.next/
+coverage/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
