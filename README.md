@@ -153,6 +153,8 @@ If these operations cannot be staffed, test only the reading and *read-only* wis
 
 ## 9. Scope and implementation
 
+**Visual interaction prototype:** [Open the static mobile prototype](prototype/index.html). Its [design notes](prototype/README.md) capture the pale forest and water palette, slowly appearing water fortune, and a wish slip posted to a mailbox. This is a demonstration with authored sample content, not a live study or real stranger submissions.
+
 **Build now:** mobile-first web page; two equal reveal choices; content bank; reviewed real-wish pool; optional wish submission and short reply; lightweight admin review; pseudonymous event log; consent and deletion controls; outcome check-in; simple export for analysis.
 
 **Defer:** live AI character, AI-generated fortune, complex tarot rules, original character IP, physical cards, open-ended DM, social graph, paid readings, streaks, endless feed, recommendation algorithm, native app.
