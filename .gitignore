@@ -1,6 +1,7 @@
 # Local workspace and private study materials
 .codex/
 upload/
+attachments/
 *.local
 .env
 .env.*
