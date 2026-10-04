@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9f6">
+  <title>Wishbox · 一封小小的心愿</title>
+  <style>
+    :root {
+      --paper: #f7f9f6;
+      --white: #fffefa;
+      --mint: #dcebe3;
+      --water: #c7e4e9;
+      --water-deep: #86b8c2;
+      --ink: #334b57;
+      --muted: #71858b;
+      --line: #b8d0cc;
+      --accent: #b77f73;
+      --shadow: 0 18px 45px rgba(53, 83, 89, .08);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { background: #e9f0ec; }
+    body { margin: 0; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .app { max-width: 430px; min-height: 100dvh; margin: auto; padding: max(24px, env(safe-area-inset-top)) 24px max(36px, env(safe-area-inset-bottom)); background: var(--paper); overflow: hidden; position: relative; }
+    .app::before { content: ""; position: absolute; inset: 0 0 auto; height: 320px; background: radial-gradient(ellipse at 50% 0, #e2f2ed, transparent 70%); pointer-events: none; }
+    .topbar { position: relative; display: flex; align-items: center; justify-content: space-between; height: 34px; letter-spacing: .08em; }
+    .brand { font-family: Georgia, "Songti SC", serif; font-size: 18px; letter-spacing: .16em; }
+    .day { font-size: 11px; color: var(--muted); }
+    main { position: relative; }
+    .screen { display: none; animation: appear .35s ease both; }
+    .screen.active { display: block; }
+    @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .eyebrow { margin: 42px 0 12px; color: var(--muted); font-size: 11px; letter-spacing: .28em; }
+    h1, h2 { font-family: Georgia, "Songti SC", "Noto Serif CJK SC", serif; font-weight: 500; letter-spacing: .05em; }
+    h1 { font-size: 32px; line-height: 1.35; margin: 0 0 10px; }
+    h2 { font-size: 26px; line-height: 1.4; margin: 0 0 12px; }
+    p { line-height: 1.8; }
+    .sub { color: var(--muted); font-size: 14px; margin: 0; }
+    .landscape { position: relative; height: 175px; margin: 30px -24px 12px; overflow: hidden; }
+    .landscape svg { display: block; width: 100%; height: 100%; }
+    .section-label { margin: 24px 0 14px; color: var(--muted); letter-spacing: .12em; font-size: 12px; }
+    .topics { display: flex; flex-wrap: wrap; gap: 8px; }
+    .topic { border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,.55); border-radius: 99px; padding: 9px 14px; font-size: 13px; }
+    .topic[aria-pressed="true"] { background: var(--mint); border-color: #95b8ae; }
+    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 27px; }
+    .choice { background: var(--white); border: 1px solid #d7e3df; color: var(--ink); min-height: 194px; border-radius: 8px; padding: 20px 13px 16px; text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
+    .choice:hover, .choice:focus-visible { border-color: var(--water-deep); transform: translateY(-2px); }
+    .glyph { width: 74px; height: 80px; display: grid; place-items: center; }
+    .glyph svg { width: 100%; height: 100%; }
+    .choice strong { font-family: Georgia, "Songti SC", serif; font-weight: 500; font-size: 17px; }
+    .choice small { color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .footnote { color: var(--muted); font-size: 11px; text-align: center; margin-top: 18px; line-height: 1.7; }
+    .back { border: 0; background: none; color: var(--muted); padding: 14px 0; margin-top: 14px; font-size: 13px; }
+    .center { text-align: center; }
+    .reveal-area { margin: 25px auto 21px; max-width: 300px; height: 345px; border-radius: 48% 48% 9px 9px / 20% 20% 9px 9px; background: radial-gradient(ellipse at 50% 80%, #c3e4e7 0, #e3f2ef 51%, transparent 72%); display: grid; place-items: center; position: relative; }
+    .reveal-area::after { content: ""; position: absolute; width: 80%; height: 25px; bottom: 9px; border: 1px solid #b3d4d8; border-top: 0; border-radius: 50%; opacity: .8; }
+    .fortune { position: relative; width: 202px; min-height: 260px; background: #fffef9; padding: 29px 20px 21px; box-shadow: 0 10px 27px rgba(64, 105, 111, .12); border: 1px solid #e0e8df; text-align: center; transform: rotate(-2deg); overflow: hidden; }
+    .fortune .seal { color: var(--accent); border: 1px solid var(--accent); width: 28px; height: 28px; display: grid; place-items: center; margin: 0 auto 15px; font-family: serif; font-size: 14px; }
+    .fortune .fortune-title { font-family: Georgia, "Songti SC", serif; font-size: 21px; margin-bottom: 13px; }
+    .fortune .fortune-copy { font-size: 13px; line-height: 1.85; margin: 0; }
+    .fortune .fortune-question { color: var(--muted); font-size: 12px; margin-top: 16px; }
+    .wash { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,254,249,.95), rgba(199,228,233,.84)); transition: opacity 1.5s ease; z-index: 2; }
+    .fortune.revealed .wash { opacity: 0; pointer-events: none; }
+    .fortune:not(.revealed) .fortune-title, .fortune:not(.revealed) .fortune-copy, .fortune:not(.revealed) .fortune-question { opacity: .12; }
+    .fortune.revealed .fortune-title, .fortune.revealed .fortune-copy, .fortune.revealed .fortune-question { animation: ink 1.6s ease both; }
+    @keyframes ink { from { opacity: .05; filter: blur(7px); } to { opacity: 1; filter: blur(0); } }
+    .primary { border: 1px solid var(--ink); background: var(--ink); color: white; border-radius: 4px; padding: 14px 17px; width: 100%; font-size: 14px; letter-spacing: .08em; }
+    .primary:disabled { opacity: .45; cursor: not-allowed; }
+    .secondary { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 4px; padding: 13px 17px; width: 100%; font-size: 14px; }
+    .actions { display: grid; gap: 10px; margin-top: 18px; }
+    .hint { font-size: 12px; color: var(--muted); text-align: center; }
+    .wish-paper { background: var(--white); border: 1px solid #d9e4de; box-shadow: var(--shadow); min-height: 265px; padding: 28px 24px 21px; margin: 30px 0 22px; position: relative; }
+    .wish-paper::before { content: "✳"; font-size: 20px; color: var(--accent); position: absolute; right: 21px; top: 19px; }
+    .wish-paper label { font-family: Georgia, "Songti SC", serif; font-size: 18px; }
+    textarea { display: block; width: 100%; min-height: 135px; margin-top: 22px; border: 0; resize: vertical; outline: 0; background: transparent; color: var(--ink); line-height: 1.9; font-size: 15px; }
+    textarea::placeholder { color: #9daead; }
+    .count { font-size: 11px; color: var(--muted); text-align: right; }
+    .privacy { border: 0; display: flex; align-items: flex-start; gap: 9px; font-size: 13px; line-height: 1.6; margin: 0 0 17px; color: var(--ink); }
+    .privacy input { accent-color: #7ba99d; margin-top: 3px; }
+    .mailbox-wrap { height: 300px; display: grid; place-items: end center; position: relative; margin: 30px 0 15px; }
+    .mailbox { width: 235px; height: 195px; border: 2px solid #89aaa4; border-radius: 80px 80px 12px 12px; background: linear-gradient(145deg, #e0ece3, #d1e6e1); position: relative; box-shadow: 8px 12px 0 #c1dad4; }
+    .mailbox::before { content: ""; position: absolute; width: 134px; height: 10px; background: #587a7c; border-radius: 10px; left: 49px; top: 52px; box-shadow: inset 0 2px 3px #3b5e61; }
+    .mailbox::after { content: "WISHBOX"; position: absolute; left: 0; right: 0; top: 105px; text-align: center; font-family: Georgia, serif; font-size: 13px; letter-spacing: .24em; color: #5c7b7b; }
+    .posted-note { position: absolute; z-index: 1; width: 105px; height: 93px; left: calc(50% - 52px); top: 18px; background: var(--white); border: 1px solid #d7d9cd; box-shadow: 0 5px 15px #7fa5a447; transform: rotate(5deg); display: grid; place-items: center; color: var(--accent); font-family: Georgia, serif; font-size: 23px; }
+    .posted-note.drop { animation: post 1.2s ease-in forwards; }
+    @keyframes post { 0% { top: 18px; opacity: 1; transform: rotate(5deg) scale(1); } 55% { opacity: 1; } 100% { top: 110px; opacity: 0; transform: rotate(0) scale(.88); } }
+    .stranger { margin: 42px 0 20px; padding: 31px 26px 29px; background: var(--white); border: 1px solid #d9e4de; box-shadow: var(--shadow); min-height: 275px; position: relative; }
+    .stranger::before { content: "✳"; display: block; color: var(--accent); font-size: 22px; margin-bottom: 13px; }
+    .stranger blockquote { margin: 0; font: 21px/1.8 Georgia, "Songti SC", serif; }
+    .stranger .meta { margin: 20px 0 0; color: var(--muted); font-size: 11px; }
+    .reply { min-height: 90px; background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 12px; margin: 4px 0 15px; }
+    .rule { margin-top: 22px; padding-top: 15px; border-top: 1px solid #dce7e2; font-size: 11px; color: var(--muted); line-height: 1.7; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar"><span class="brand">wishbox</span><span class="day">A SMALL MOMENT FOR YOU</span></header>
+    <main>
+      <section id="home" class="screen active" aria-labelledby="home-title">
+        <div class="eyebrow">一个小小的未知 · 一点真实的温暖</div>
+        <h1 id="home-title">今天，心里装着什么？</h1>
+        <p class="sub">选一个此刻在意的话题，再拆开一份未知。</p>
+        <div class="landscape" aria-hidden="true">
+          <svg viewBox="0 0 430 175" preserveAspectRatio="xMidYMid slice" role="img">
+            <path d="M0 115 Q36 70 74 96 T150 87 Q190 43 220 78 T290 75 Q343 25 430 75 L430 175 L0 175Z" fill="#e0eee6"/>
+            <path d="M0 142 Q40 97 85 120 T159 101 Q211 69 245 107 T322 97 Q380 59 430 109 L430 175 L0 175Z" fill="#d3e6db"/>
+            <path d="M-5 166 Q78 131 130 153 T241 143 Q327 107 435 138" fill="none" stroke="#9acbd0" stroke-width="18" opacity=".65"/>
+            <path d="M-5 166 Q78 131 130 153 T241 143 Q327 107 435 138" fill="none" stroke="#dceff0" stroke-width="5" opacity=".8"/>
+            <g fill="none" stroke="#8fb8aa" stroke-width="1" opacity=".75"><path d="M45 114v-35m-12 27 12-20 12 20m-21-13 9-20 8 16"/><path d="M112 109V61m-17 35 17-30 17 30m-25-13 8-25 9 25"/><path d="M274 116V69m-18 35 18-31 18 31m-26-15 8-24 8 24"/><path d="M374 110V50m-23 49 23-41 23 41m-35-19 12-34 12 34"/></g>
+            <path d="M0 169 Q123 145 217 162 T430 158" fill="none" stroke="#f5faf7" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="section-label">此刻的话题</div>
+        <div class="topics" role="group" aria-label="选择话题">
+          <button class="topic" data-topic="工作 / 学业" aria-pressed="true">工作 / 学业</button>
+          <button class="topic" data-topic="关系" aria-pressed="false">关系</button>
+          <button class="topic" data-topic="自己" aria-pressed="false">自己</button>
+          <button class="topic" data-topic="随便看看" aria-pressed="false">随便看看</button>
+        </div>
+        <div class="choices">
+          <button class="choice" id="choose-reading" aria-label="打开给我的一张签">
+            <span class="glyph" aria-hidden="true"><svg viewBox="0 0 74 80"><path d="M12 7h50v66H12z" fill="#fdfbf3" stroke="#8eaeb0"/><path d="M18 19h38M18 26h27M18 34h35M18 41h23" stroke="#acc9c4" stroke-width="1.3"/><path d="M34 52h16v16H34z" fill="none" stroke="#b77f73"/><text x="42" y="64" fill="#b77f73" font-size="12" text-anchor="middle">签</text></svg></span>
+            <strong>给我的一张签</strong><small>让文字慢慢浮现</small>
+          </button>
+          <button class="choice" id="choose-wish" aria-label="打开陌生人的一个心愿">
+            <span class="glyph" aria-hidden="true"><svg viewBox="0 0 74 80"><path d="M7 23h60v43H7z" fill="#fdfbf3" stroke="#8eaeb0"/><path d="m7 24 30 23 30-23M7 65l21-22m39 22L46 43" fill="none" stroke="#8eaeb0"/><circle cx="37" cy="47" r="8" fill="#d9eae0" stroke="#8eaeb0"/><path d="m34 47 2 2 4-4" fill="none" stroke="#6e9690"/></svg></span>
+            <strong>陌生人的心愿</strong><small>打开一封未读的信</small>
+          </button>
+        </div>
+        <p class="footnote">两份都可以打开 · 原型中的陌生人心愿仅为示意文案</p>
+      </section>
+
+      <section id="reading" class="screen" aria-labelledby="reading-title">
+        <button class="back" data-back="home">← 返回选择</button>
+        <div class="eyebrow center">水 占 · 今 日 的 一 张 签</div>
+        <h2 id="reading-title" class="center">让它慢慢浮现</h2>
+        <p class="sub center">轻触签纸，看看此刻与你相遇的文字。</p>
+        <div class="reveal-area"><div class="fortune" id="fortune" role="button" tabindex="0" aria-label="触碰签纸，让文字显现"><div class="seal">签</div><div class="fortune-title" id="fortune-title">先走一步</div><p class="fortune-copy" id="fortune-copy"></p><p class="fortune-question" id="fortune-question"></p><div class="wash"></div></div></div>
+        <button class="primary" id="reveal-button">轻触水面 · 显现签文</button>
+        <div class="actions" id="reading-actions" hidden><button class="primary" data-go="compose">写下一句愿望</button><button class="secondary" data-go="stranger">打开陌生人的心愿</button></div>
+        <p class="footnote">签文是预先撰写的轻提示，不预测结果。</p>
+      </section>
+
+      <section id="compose" class="screen" aria-labelledby="compose-title">
+        <button class="back" data-back="home">← 返回选择</button>
+        <div class="eyebrow">给此刻的自己 · 一张祈愿帖</div>
+        <h2 id="compose-title">把心愿写下来</h2>
+        <p class="sub">可以很小，也可以很具体。</p>
+        <div class="wish-paper"><label for="wish-text">我希望……</label><textarea id="wish-text" maxlength="100" placeholder="例如：希望明天的汇报，我能平静地说完第一句话。"></textarea><div class="count"><span id="wish-count">0</span> / 100</div></div>
+        <label class="privacy"><input type="checkbox" id="share-wish"><span>愿意匿名分享给其他参与者阅读，并可能收到一条回复。默认仅自己保存；可以随时删除。</span></label>
+        <button class="primary" id="post-button" disabled>折好祈愿帖，投入心愿邮箱</button>
+        <p class="footnote">演示原型不会上传或保存你输入的文字。</p>
+      </section>
+
+      <section id="posted" class="screen" aria-labelledby="posted-title">
+        <button class="back" data-back="home">← 返回首页</button>
+        <div class="eyebrow center">一份心愿 · 已妥善收好</div>
+        <h2 id="posted-title" class="center">愿望，已经寄出。</h2>
+        <p class="sub center" id="posted-subtitle">它暂时只属于你。</p>
+        <div class="mailbox-wrap" aria-hidden="true"><div class="posted-note" id="posted-note">✳</div><div class="mailbox"></div></div>
+        <button class="primary" data-go="stranger">也打开一封陌生人的心愿</button>
+        <p class="footnote">真实测试需要内容审核与删除入口；这里仅演示投递动作。</p>
+      </section>
+
+      <section id="stranger" class="screen" aria-labelledby="stranger-title">
+        <button class="back" data-back="home">← 返回选择</button>
+        <div class="eyebrow">一 封 陌 生 人 的 心 愿</div>
+        <h2 id="stranger-title">刚好被你打开</h2>
+        <div class="stranger"><blockquote>“希望明天第一次独立做汇报时，不要紧张到忘词。”</blockquote><p class="meta">原型示意文案 · 非真实用户投稿</p></div>
+        <label for="reply-text" class="section-label">如果想回应，你会说什么？</label>
+        <textarea id="reply-text" class="reply" placeholder="我想对你说……"></textarea>
+        <button class="primary" id="reply-button">送出这句温暖（演示）</button>
+        <div class="actions"><button class="secondary" data-go="compose">写下自己的愿望</button><button class="secondary" data-go="home">先到这里</button></div>
+        <p class="rule">真实测试只展示经同意、审核后的真实心愿；回复也需审核后送达。</p>
+      </section>
+    </main>
+  </div>
+  <script>
+    const screens = Object.fromEntries([...document.querySelectorAll('.screen')].map(el => [el.id, el]));
+    const readings = {
+      '工作 / 学业': ['先走一步', '有些顺利，始于提前准备好的第一句话。给自己一点时间，慢慢把它说出来。', '明天你最希望哪一刻顺利？'],
+      '关系': ['留一点空白', '一句真诚的话，不一定要说得完美。愿你能表达，也能好好听见对方。', '你希望下一次对话是什么样？'],
+      '自己': ['慢一点也好', '今天的进度不需要和任何人一样。先完成眼前小小的一步。', '此刻你想给自己什么祝福？'],
+      '随便看看': ['一件小事', '留意今天意外出现的一点好：一阵风、一句问候、一个刚好赶上的瞬间。', '你想让什么小事发生？']
+    };
+    let topic = '工作 / 学业';
+    let revealTimer;
+    function show(id) {
+      clearTimeout(revealTimer);
+      Object.values(screens).forEach(s => s.classList.toggle('active', s.id === id));
+      window.scrollTo(0, 0);
+      if (id === 'reading') {
+        const [title, copy, question] = readings[topic];
+        document.getElementById('fortune-title').textContent = title;
+        document.getElementById('fortune-copy').textContent = copy;
+        document.getElementById('fortune-question').textContent = question;
+        document.getElementById('fortune').classList.remove('revealed');
+        document.getElementById('reading-actions').hidden = true;
+        document.getElementById('reveal-button').hidden = false;
+      }
+      if (id === 'posted') {
+        document.getElementById('posted-subtitle').textContent = document.getElementById('share-wish').checked ? '它将匿名分享；真实测试中会先经过审核。' : '它暂时只属于你。';
+        const note = document.getElementById('posted-note');
+        note.classList.remove('drop');
+        void note.offsetWidth;
+        note.classList.add('drop');
+      }
+    }
+    document.querySelectorAll('[data-go], [data-back]').forEach(btn => btn.addEventListener('click', () => show(btn.dataset.go || btn.dataset.back)));
+    document.querySelectorAll('.topic').forEach(btn => btn.addEventListener('click', () => {
+      topic = btn.dataset.topic;
+      document.querySelectorAll('.topic').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    }));
+    document.getElementById('choose-reading').addEventListener('click', () => show('reading'));
+    document.getElementById('choose-wish').addEventListener('click', () => show('stranger'));
+    function reveal() {
+      const fortune = document.getElementById('fortune');
+      if (fortune.classList.contains('revealed')) return;
+      fortune.classList.add('revealed');
+      document.getElementById('reveal-button').hidden = true;
+      revealTimer = setTimeout(() => { document.getElementById('reading-actions').hidden = false; }, 1500);
+    }
+    document.getElementById('fortune').addEventListener('click', reveal);
+    document.getElementById('fortune').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reveal(); } });
+    document.getElementById('reveal-button').addEventListener('click', reveal);
+    document.getElementById('wish-text').addEventListener('input', e => {
+      document.getElementById('wish-count').textContent = e.target.value.length;
+      document.getElementById('post-button').disabled = !e.target.value.trim();
+    });
+    document.getElementById('post-button').addEventListener('click', () => show('posted'));
+    document.getElementById('reply-button').addEventListener('click', () => {
+      const value = document.getElementById('reply-text').value.trim();
+      if (!value) { document.getElementById('reply-text').focus(); return; }
+      alert('这是一条演示回复，没有发送给任何人。');
+    });
+  </script>
+</body>
+</html>
